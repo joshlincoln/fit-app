@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    // ...other options...
+    "target": "es6",                    
+    "module": "commonjs",               
+    "experimentalDecorators": true,     
+    "emitDecoratorMetadata": true,      
+    "resolveJsonModule": true,          // Needed for JSON imports
+    "esModuleInterop": true,
+    "outDir": "dist"
+  }
+}
