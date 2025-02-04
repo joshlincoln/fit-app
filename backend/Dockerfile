@@ -1,20 +1,21 @@
-# Use Node.js official image as base
+# Use an official Node runtime as a parent image
 FROM node:18-alpine
 
-# Set working directory in the container
+# Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json before other files
-COPY package.json yarn.lock ./
-
-# Install dependencies
-RUN yarn install --frozen-lockfile
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm install
 
 # Copy the rest of the application code
 COPY . .
 
-# Expose the application port
+# Build the TypeScript code
+RUN npm run build
+
+# Expose the port your app runs on
 EXPOSE 3000
 
-# Start the backend server
+# Start the server
 CMD ["yarn", "start"]

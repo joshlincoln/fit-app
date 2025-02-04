@@ -1,0 +1,787 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"FlattenMaps_T_": {
+				"properties": {},
+				"type": "object"
+			},
+			"ActivityDocument": {
+				"$ref": "#/components/schemas/FlattenMaps_T_"
+			},
+			"CreateActivityRequest": {
+				"properties": {
+					"type": {
+						"type": "string",
+						"enum": [
+							"Lift",
+							"Cardio"
+						]
+					},
+					"name": {
+						"type": "string"
+					},
+					"defaultSets": {
+						"items": {
+							"properties": {
+								"weight": {
+									"type": "number",
+									"format": "double"
+								},
+								"reps": {
+									"type": "number",
+									"format": "double"
+								}
+							},
+							"required": [
+								"weight",
+								"reps"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"type",
+					"name"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UpdateActivityRequest": {
+				"properties": {
+					"type": {
+						"type": "string",
+						"enum": [
+							"Lift",
+							"Cardio"
+						]
+					},
+					"name": {
+						"type": "string"
+					},
+					"defaultSets": {
+						"items": {
+							"properties": {
+								"weight": {
+									"type": "number",
+									"format": "double"
+								},
+								"reps": {
+									"type": "number",
+									"format": "double"
+								}
+							},
+							"required": [
+								"weight",
+								"reps"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Record_string.number-Array_": {
+				"properties": {},
+				"type": "object",
+				"description": "Construct a type with a set of properties K of type T"
+			},
+			"ExerciseDocument": {
+				"$ref": "#/components/schemas/FlattenMaps_T_"
+			},
+			"CreateExerciseRequest": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string",
+						"enum": [
+							"Lift",
+							"Cardio"
+						]
+					},
+					"defaultSets": {
+						"items": {
+							"properties": {
+								"weight": {
+									"type": "number",
+									"format": "double"
+								},
+								"reps": {
+									"type": "number",
+									"format": "double"
+								}
+							},
+							"required": [
+								"weight",
+								"reps"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					},
+					"defaultDuration": {
+						"type": "number",
+						"format": "double"
+					},
+					"defaultUnit": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"type"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UpdateExerciseRequest": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string",
+						"enum": [
+							"Lift",
+							"Cardio"
+						]
+					},
+					"defaultSets": {
+						"items": {
+							"properties": {
+								"weight": {
+									"type": "number",
+									"format": "double"
+								},
+								"reps": {
+									"type": "number",
+									"format": "double"
+								}
+							},
+							"required": [
+								"weight",
+								"reps"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					},
+					"defaultDuration": {
+						"type": "number",
+						"format": "double"
+					},
+					"defaultUnit": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"WorkoutSessionDocument": {
+				"$ref": "#/components/schemas/FlattenMaps_T_"
+			},
+			"CreateWorkoutSessionRequest": {
+				"properties": {
+					"userId": {
+						"type": "number",
+						"format": "double"
+					},
+					"templateId": {
+						"type": "string"
+					},
+					"date": {
+						"type": "string"
+					},
+					"duration": {
+						"type": "number",
+						"format": "double"
+					},
+					"activities": {
+						"items": {
+							"properties": {
+								"sets": {
+									"items": {
+										"properties": {
+											"previous": {
+												"properties": {
+													"weight": {
+														"type": "number",
+														"format": "double"
+													},
+													"reps": {
+														"type": "number",
+														"format": "double"
+													}
+												},
+												"required": [
+													"weight",
+													"reps"
+												],
+												"type": "object"
+											},
+											"weight": {
+												"type": "number",
+												"format": "double"
+											},
+											"reps": {
+												"type": "number",
+												"format": "double"
+											}
+										},
+										"required": [
+											"weight",
+											"reps"
+										],
+										"type": "object"
+									},
+									"type": "array"
+								},
+								"name": {
+									"type": "string"
+								},
+								"type": {
+									"type": "string",
+									"enum": [
+										"Lift",
+										"Cardio"
+									]
+								},
+								"id": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"sets",
+								"name",
+								"type",
+								"id"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					},
+					"notes": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"userId",
+					"date",
+					"duration",
+					"activities"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"WorkoutTemplateDocument": {
+				"$ref": "#/components/schemas/FlattenMaps_T_"
+			},
+			"CreateWorkoutTemplateRequest": {
+				"properties": {
+					"userId": {
+						"type": "number",
+						"format": "double"
+					},
+					"name": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"activities": {
+						"items": {
+							"properties": {
+								"defaultSets": {
+									"items": {
+										"properties": {
+											"weight": {
+												"type": "number",
+												"format": "double"
+											},
+											"reps": {
+												"type": "number",
+												"format": "double"
+											}
+										},
+										"required": [
+											"weight",
+											"reps"
+										],
+										"type": "object"
+									},
+									"type": "array"
+								},
+								"name": {
+									"type": "string"
+								},
+								"type": {
+									"type": "string",
+									"enum": [
+										"Lift",
+										"Cardio"
+									]
+								},
+								"id": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"name",
+								"type",
+								"id"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"userId",
+					"name",
+					"activities"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "fit-backend",
+		"version": "1.0.0",
+		"description": "Backend for the Fit App built with Express, TSOA, and MongoDB",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/activities": {
+			"get": {
+				"operationId": "GetActivities",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ActivityDocument"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all activities.",
+				"tags": [
+					"Activity"
+				],
+				"security": [],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateActivity",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ActivityDocument"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new activity.",
+				"tags": [
+					"Activity"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateActivityRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/activities/{activityId}": {
+			"put": {
+				"operationId": "UpdateActivity",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ActivityDocument"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update an activity.",
+				"tags": [
+					"Activity"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "activityId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateActivityRequest"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteActivity",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete an activity.",
+				"tags": [
+					"Activity"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "activityId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/analytics": {
+			"get": {
+				"operationId": "GetAnalytics",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Record_string.number-Array_"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieve aggregated analytics data for lift activities from workout sessions.",
+				"tags": [
+					"Analytics"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/exercises": {
+			"get": {
+				"operationId": "GetExercises",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ExerciseDocument"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all exercises.",
+				"tags": [
+					"Exercise"
+				],
+				"security": [],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateExercise",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ExerciseDocument"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new exercise.",
+				"tags": [
+					"Exercise"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateExerciseRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/exercises/{exerciseId}": {
+			"put": {
+				"operationId": "UpdateExercise",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ExerciseDocument"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update an exercise.",
+				"tags": [
+					"Exercise"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "exerciseId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateExerciseRequest"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteExercise",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete an exercise.",
+				"tags": [
+					"Exercise"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "exerciseId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/sessions": {
+			"post": {
+				"operationId": "CreateSession",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/WorkoutSessionDocument"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new workout session.\r\nIf a templateId is provided, you may choose to pre-populate the session data from the template.",
+				"tags": [
+					"WorkoutSession"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateWorkoutSessionRequest"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetSessions",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/WorkoutSessionDocument"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieve all workout sessions.",
+				"tags": [
+					"WorkoutSession"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/templates": {
+			"post": {
+				"operationId": "CreateTemplate",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/WorkoutTemplateDocument"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new workout template.",
+				"tags": [
+					"WorkoutTemplate"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateWorkoutTemplateRequest"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetTemplates",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/WorkoutTemplateDocument"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieve all workout templates.",
+				"tags": [
+					"WorkoutTemplate"
+				],
+				"security": [],
+				"parameters": []
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

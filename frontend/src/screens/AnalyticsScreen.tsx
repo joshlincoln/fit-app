@@ -1,26 +1,45 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import { commonStyles } from '../styles';
+import React, { useEffect } from 'react';
+import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
+import commonStyles from '../styles/commonStyles';
+import { useFitStore } from '../store/workout';
 
-export default function AnalyticsScreen() {
+const AnalyticsScreen = () => {
+  const { analytics, loadingAnalytics, error, fetchAnalytics } = useFitStore();
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, []);
+
   return (
-    <View style={commonStyles.container}>
-      <Text style={commonStyles.header}>Analytics</Text>
-
-      {/* Card for PR Tracking */}
-      <View style={commonStyles.card}>
-        <Text style={commonStyles.cardTitle}>Personal Records</Text>
-        <Text style={commonStyles.cardText}>Bench Press: 225 lbs</Text>
-        <Text style={commonStyles.cardText}>Squat: 315 lbs</Text>
-        <Text style={commonStyles.cardText}>Deadlift: 405 lbs</Text>
-      </View>
-
-      {/* Card for Volume Summary */}
-      <View style={commonStyles.card}>
-        <Text style={commonStyles.cardTitle}>Weekly Volume</Text>
-        <Text style={commonStyles.cardText}>Total Volume: 15,400 lbs</Text>
-        <Text style={commonStyles.cardText}>Workouts: 4 this week</Text>
-      </View>
-    </View>
+    <ScrollView style={commonStyles.container}>
+      <Text style={commonStyles.screenTitle}>Analytics</Text>
+      {loadingAnalytics ? (
+        <ActivityIndicator size="large" color="#4a90e2" />
+      ) : error ? (
+        <Text style={{ color: 'red' }}>{error}</Text>
+      ) : (
+        <>
+          <View style={commonStyles.item}>
+            <Text style={commonStyles.itemText}>Average Reps per Workout</Text>
+            <Text style={commonStyles.itemText}>12 reps</Text>
+          </View>
+          <View style={commonStyles.item}>
+            <Text style={commonStyles.itemText}>Max Weight Lifted</Text>
+            <Text style={commonStyles.itemText}>200 lbs</Text>
+          </View>
+          <View style={commonStyles.item}>
+            <Text style={commonStyles.itemText}>Total Workout Duration (This Week)</Text>
+            <Text style={commonStyles.itemText}>300 min</Text>
+          </View>
+          <View style={commonStyles.item}>
+            <Text style={commonStyles.itemText}>Workouts Per Week</Text>
+            <Text style={commonStyles.itemText}>3 workouts</Text>
+          </View>
+          {/* Additional analytics ideas: charts, trend lines, etc. */}
+        </>
+      )}
+    </ScrollView>
   );
-}
+};
+
+export default AnalyticsScreen;

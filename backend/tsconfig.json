@@ -8,5 +8,8 @@
     "resolveJsonModule": true,          // Needed for JSON imports
     "esModuleInterop": true,
     "outDir": "dist"
-  }
+  },
+  "include": [
+    "src/**/*"
+  ]
 }
