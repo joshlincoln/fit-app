@@ -33,7 +33,7 @@ export class ExerciseController extends Controller {
    */
   @Post('/')
   public async createExercise(
-    @Body() requestBody: CreateExerciseRequest
+    @Body() requestBody: CreateExerciseRequest,
   ): Promise<ExerciseDocument> {
     const exercise = new Exercise(requestBody);
     return await exercise.save();
@@ -45,7 +45,7 @@ export class ExerciseController extends Controller {
   @Put('{exerciseId}')
   public async updateExercise(
     @Path() exerciseId: string,
-    @Body() requestBody: UpdateExerciseRequest
+    @Body() requestBody: UpdateExerciseRequest,
   ): Promise<ExerciseDocument> {
     const exercise = await Exercise.findByIdAndUpdate(exerciseId, requestBody, { new: true });
     if (!exercise) {

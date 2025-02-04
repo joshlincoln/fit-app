@@ -20,7 +20,7 @@ const ActivitySchema = new Schema<ActivityDocument>(
       },
     ],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default model<ActivityDocument>('Activity', ActivitySchema);

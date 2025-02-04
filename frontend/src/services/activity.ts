@@ -18,9 +18,7 @@ export const getActivities = async (): Promise<Activity[]> => {
   return response.data;
 };
 
-export const createActivity = async (
-  data: CreateActivityRequest
-): Promise<Activity> => {
+export const createActivity = async (data: CreateActivityRequest): Promise<Activity> => {
   const response = await apiClient.post<Activity>('/activities', data);
   return response.data;
 };

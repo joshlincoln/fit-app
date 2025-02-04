@@ -35,11 +35,12 @@ const WorkoutDetailScreen = () => {
           <Text style={commonStyles.itemText}>
             {activity.name} ({activity.type})
           </Text>
-          {activity.defaultSets && activity.defaultSets.map((set, index) => (
-            <Text key={index} style={commonStyles.itemText}>
-              Set {index + 1}: {set.reps} reps @ {set.weight} lbs
-            </Text>
-          ))}
+          {activity.defaultSets &&
+            activity.defaultSets.map((set, index) => (
+              <Text key={index} style={commonStyles.itemText}>
+                Set {index + 1}: {set.reps} reps @ {set.weight} lbs
+              </Text>
+            ))}
         </View>
       ))}
       <View style={commonStyles.buttonSpacing}>

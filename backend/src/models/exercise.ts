@@ -23,7 +23,7 @@ const ExerciseSchema = new Schema<ExerciseDocument>(
     defaultDuration: { type: Number },
     defaultUnit: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default model<ExerciseDocument>('Exercise', ExerciseSchema);

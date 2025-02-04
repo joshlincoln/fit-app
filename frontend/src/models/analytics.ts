@@ -1,5 +1,3 @@
-
 export interface AnalyticsData {
-    [activityName: string]: number[];
-  }
-  
+  [activityName: string]: number[];
+}

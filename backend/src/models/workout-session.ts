@@ -40,7 +40,7 @@ const SessionActivitySchema = new Schema<SessionActivity>(
       },
     ],
   },
-  { _id: false }
+  { _id: false },
 );
 
 const WorkoutSessionSchema = new Schema<WorkoutSessionDocument>(
@@ -52,7 +52,7 @@ const WorkoutSessionSchema = new Schema<WorkoutSessionDocument>(
     activities: [SessionActivitySchema],
     notes: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default model<WorkoutSessionDocument>('WorkoutSession', WorkoutSessionSchema);

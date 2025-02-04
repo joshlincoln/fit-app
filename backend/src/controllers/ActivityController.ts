@@ -29,7 +29,7 @@ export class ActivityController extends Controller {
    */
   @Post('/')
   public async createActivity(
-    @Body() requestBody: CreateActivityRequest
+    @Body() requestBody: CreateActivityRequest,
   ): Promise<ActivityDocument> {
     const activity = new Activity(requestBody);
     return await activity.save();
@@ -41,7 +41,7 @@ export class ActivityController extends Controller {
   @Put('{activityId}')
   public async updateActivity(
     @Path() activityId: string,
-    @Body() requestBody: UpdateActivityRequest
+    @Body() requestBody: UpdateActivityRequest,
   ): Promise<ActivityDocument> {
     const activity = await Activity.findByIdAndUpdate(activityId, requestBody, { new: true });
     if (!activity) {

@@ -25,7 +25,9 @@ export class WorkoutSessionController extends Controller {
    * If a templateId is provided, you may choose to pre-populate the session data from the template.
    */
   @Post('/')
-  public async createSession(@Body() body: CreateWorkoutSessionRequest): Promise<WorkoutSessionDocument> {
+  public async createSession(
+    @Body() body: CreateWorkoutSessionRequest,
+  ): Promise<WorkoutSessionDocument> {
     // Optionally: If templateId is provided, load the template and merge any default values if not supplied.
     if (body.templateId) {
       const template = await WorkoutTemplate.findById(body.templateId);

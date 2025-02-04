@@ -30,18 +30,14 @@ const WorkoutsScreen = () => {
       ) : error ? (
         <Text style={{ color: 'red' }}>{error}</Text>
       ) : (
-        <FlatList
-          data={templates}
-          keyExtractor={(item) => item._id}
-          renderItem={renderItem}
-        />
+        <FlatList data={templates} keyExtractor={(item) => item._id} renderItem={renderItem} />
       )}
       <View style={commonStyles.buttonSpacing}>
         <Button
-            title="Add Workout"
-            onPress={() => navigation.navigate('CreateEditWorkout')}
-            color="#4a90e2"
-            />
+          title="Add Workout"
+          onPress={() => navigation.navigate('CreateEditWorkout')}
+          color="#4a90e2"
+        />
       </View>
     </View>
   );

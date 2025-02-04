@@ -4,24 +4,25 @@ import { Picker } from '@react-native-picker/picker';
 import commonStyles from '../styles/commonStyles';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useFitStore } from '../store/workout';
-import { getExercises, createExercise, Exercise } from '../services/exercise';
+import { getExercises, createExercise } from '../services/exercise';
+import { Exercise } from '../models/exercise';
 
-interface SetInput {
-  reps: string;
+// These interfaces are used internally on the CreateEditWorkoutScreen
+// to manage user input before converting the data into a CreateWorkoutTemplateRequest.
+export interface SetInput {
+  reps: string; // Stored as string so that TextInput values work directly
   weight: string;
 }
 
-interface ActivityInput {
-  id: string;
-  selectedExerciseId: string; // Existing exercise _id or "add_new"
-  isNew: boolean; // True if user is adding a new exercise
-  newExerciseName: string;
-  newExerciseType: 'Lift' | 'Cardio';
-  // For lifts:
-  sets: SetInput[];
-  // For cardio:
-  defaultDuration: string;
-  defaultUnit: string;
+export interface ActivityInput {
+  id: string; // local unique id (for UI tracking)
+  selectedExerciseId: string; // either an existing Exercise _id or the special value "add_new"
+  isNew: boolean; // true if the user is creating a new exercise
+  exerciseName: string; // effective name (either from the dropdown or entered manually)
+  exerciseType: 'Lift' | 'Cardio'; // effective type
+  sets: SetInput[]; // if the exercise type is Lift; user can add multiple sets
+  defaultDuration: string; // if Cardio
+  defaultUnit: string; // if Cardio
 }
 
 const CreateEditWorkoutScreen = () => {
@@ -53,7 +54,7 @@ const CreateEditWorkoutScreen = () => {
     loadExercises();
   }, []);
 
-  // Preload existing workout data if editing
+  // If editing, preload the existing workout data
   useEffect(() => {
     if (workoutId) {
       const workout = templates.find((t) => t._id === workoutId);
@@ -61,13 +62,13 @@ const CreateEditWorkoutScreen = () => {
         setWorkoutName(workout.name);
         setDescription(workout.description || '');
         const loadedActivities = workout.activities.map((act) => ({
-          id: act.exercise, // stored exercise _id in the template
+          id: act.exercise, // stored exercise _id
           selectedExerciseId: act.exercise,
           isNew: false,
-          newExerciseName: '',
-          newExerciseType: 'Lift', // default; actual type will be determined by the exercise lookup
+          exerciseName: '', // will be filled from availableExercises later
+          exerciseType: 'Lift' as 'Lift' | 'Cardio', // default, then update after lookup
           sets: act.defaultSets
-            ? act.defaultSets.map(set => ({
+            ? act.defaultSets.map((set) => ({
                 reps: set.reps.toString(),
                 weight: set.weight.toString(),
               }))
@@ -76,18 +77,40 @@ const CreateEditWorkoutScreen = () => {
           defaultUnit: act.defaultUnit || '',
         }));
         setActivities(loadedActivities);
+        // Update exerciseName and exerciseType for each activity based on availableExercises
+        // (Delayed lookup: once availableExercises are loaded, update each activity.)
       }
     }
   }, [workoutId, templates]);
 
-  // Add a new activity entry; default to "add new"
+  // When available exercises load, update activities that are not "add_new"
+  useEffect(() => {
+    if (availableExercises.length > 0) {
+      const newActivities = activities.map((activity) => {
+        if (activity.selectedExerciseId !== 'add_new') {
+          const found = availableExercises.find((ex) => ex._id === activity.selectedExerciseId);
+          if (found) {
+            return {
+              ...activity,
+              exerciseName: found.name,
+              exerciseType: found.type,
+            };
+          }
+        }
+        return activity;
+      });
+      setActivities(newActivities);
+    }
+  }, [availableExercises]);
+
+  // Add a new activity entry; default is "add_new"
   const addActivity = () => {
     const newActivity: ActivityInput = {
       id: 'act-' + Date.now(),
       selectedExerciseId: 'add_new',
       isNew: true,
-      newExerciseName: '',
-      newExerciseType: 'Lift',
+      exerciseName: '',
+      exerciseType: 'Lift',
       sets: [{ reps: '', weight: '' }],
       defaultDuration: '',
       defaultUnit: '',
@@ -95,13 +118,22 @@ const CreateEditWorkoutScreen = () => {
     setActivities([...activities, newActivity]);
   };
 
-  const updateActivityField = (index: number, field: keyof ActivityInput, value: string | boolean | 'Lift' | 'Cardio') => {
+  const updateActivityField = (
+    index: number,
+    field: keyof ActivityInput,
+    value: string | boolean | 'Lift' | 'Cardio',
+  ) => {
     const newActivities = [...activities];
     newActivities[index][field] = value as any;
     setActivities(newActivities);
   };
 
-  const updateSetField = (activityIndex: number, setIndex: number, field: keyof SetInput, value: string) => {
+  const updateSetField = (
+    activityIndex: number,
+    setIndex: number,
+    field: keyof SetInput,
+    value: string,
+  ) => {
     const newActivities = [...activities];
     newActivities[activityIndex].sets[setIndex][field] = value;
     setActivities(newActivities);
@@ -113,36 +145,38 @@ const CreateEditWorkoutScreen = () => {
     setActivities(newActivities);
   };
 
-  // Handle exercise selection change in the dropdown
+  // Handle exercise selection change
   const handleExerciseSelectionChange = (index: number, selectedValue: string) => {
     if (selectedValue === 'add_new') {
       updateActivityField(index, 'selectedExerciseId', 'add_new');
       updateActivityField(index, 'isNew', true);
-      updateActivityField(index, 'newExerciseName', '');
+      updateActivityField(index, 'exerciseName', '');
     } else {
       updateActivityField(index, 'selectedExerciseId', selectedValue);
       updateActivityField(index, 'isNew', false);
-      const found = availableExercises.find(ex => ex._id === selectedValue);
+      const found = availableExercises.find((ex) => ex._id === selectedValue);
       if (found) {
-        updateActivityField(index, 'newExerciseName', found.name);
-        updateActivityField(index, 'newExerciseType', found.type);
+        updateActivityField(index, 'exerciseName', found.name);
+        updateActivityField(index, 'exerciseType', found.type);
         if (found.type === 'Lift' && found.defaultSets && found.defaultSets.length > 0) {
-          const defaultSets = found.defaultSets.map(set => ({
+          const defaultSets = found.defaultSets.map((set) => ({
             reps: set.reps.toString(),
             weight: set.weight.toString(),
           }));
-          const newActivities = [...activities];
-          newActivities[index].sets = defaultSets;
-          setActivities(newActivities);
+          updateActivityField(index, 'sets', defaultSets);
         } else if (found.type === 'Cardio') {
-          updateActivityField(index, 'defaultDuration', found.defaultDuration ? found.defaultDuration.toString() : '');
+          updateActivityField(
+            index,
+            'defaultDuration',
+            found.defaultDuration ? found.defaultDuration.toString() : '',
+          );
           updateActivityField(index, 'defaultUnit', found.defaultUnit || '');
         }
       }
     }
   };
 
-  // When saving, for each activity marked as new, create the exercise first and then build the workout template payload.
+  // When saving, for each activity marked as new, call createExercise API first.
   const handleSaveWorkout = async () => {
     if (!workoutName || activities.length === 0) return;
     const convertedActivities = [];
@@ -151,23 +185,18 @@ const CreateEditWorkoutScreen = () => {
       if (act.selectedExerciseId === 'add_new' && act.isNew) {
         try {
           const created = await createExercise({
-            name: act.newExerciseName,
-            type: act.newExerciseType,
+            name: act.exerciseName,
+            type: act.exerciseType,
             defaultSets:
-              act.newExerciseType === 'Lift'
-                ? act.sets.map(set => ({
+              act.exerciseType === 'Lift'
+                ? act.sets.map((set) => ({
                     reps: parseInt(set.reps, 10) || 0,
                     weight: parseFloat(set.weight) || 0,
                   }))
                 : undefined,
             defaultDuration:
-              act.newExerciseType === 'Cardio'
-                ? parseInt(act.defaultDuration, 10) || 0
-                : undefined,
-            defaultUnit:
-              act.newExerciseType === 'Cardio'
-                ? act.defaultUnit
-                : undefined,
+              act.exerciseType === 'Cardio' ? parseInt(act.defaultDuration, 10) || 0 : undefined,
+            defaultUnit: act.exerciseType === 'Cardio' ? act.defaultUnit : undefined,
           });
           finalExerciseId = created._id;
         } catch (error) {
@@ -177,12 +206,12 @@ const CreateEditWorkoutScreen = () => {
       const activityObj: any = {
         exercise: finalExerciseId,
       };
-      if (act.newExerciseType === 'Lift') {
-        activityObj.defaultSets = act.sets.map(set => ({
+      if (act.exerciseType === 'Lift') {
+        activityObj.defaultSets = act.sets.map((set) => ({
           reps: parseInt(set.reps, 10) || 0,
           weight: parseFloat(set.weight) || 0,
         }));
-      } else if (act.newExerciseType === 'Cardio') {
+      } else if (act.exerciseType === 'Cardio') {
         activityObj.defaultDuration = parseInt(act.defaultDuration, 10) || 0;
         activityObj.defaultUnit = act.defaultUnit;
       }
@@ -199,9 +228,7 @@ const CreateEditWorkoutScreen = () => {
 
   return (
     <ScrollView style={commonStyles.container}>
-      <Text style={commonStyles.screenTitle}>
-        {workoutId ? 'Edit Workout' : 'Create Workout'}
-      </Text>
+      <Text style={commonStyles.screenTitle}>{workoutId ? 'Edit Workout' : 'Create Workout'}</Text>
       <TextInput
         placeholder="Workout Name"
         placeholderTextColor="#888"
@@ -219,9 +246,7 @@ const CreateEditWorkoutScreen = () => {
       <Button title="Add Activity" onPress={addActivity} color="#4a90e2" />
       {activities.map((activity, idx) => (
         <View key={activity.id} style={[commonStyles.item, { marginTop: 16 }]}>
-          <Text style={[commonStyles.itemText, { fontWeight: 'bold' }]}>
-            Activity {idx + 1}
-          </Text>
+          <Text style={[commonStyles.itemText, { fontWeight: 'bold' }]}>Activity {idx + 1}</Text>
           {loadingExercises ? (
             <Text style={commonStyles.itemText}>Loading exercises...</Text>
           ) : (
@@ -238,79 +263,76 @@ const CreateEditWorkoutScreen = () => {
             </Picker>
           )}
           {activity.selectedExerciseId === 'add_new' && activity.isNew && (
-            <>
-              <TextInput
-                placeholder="Enter New Exercise Name"
-                placeholderTextColor="#888"
-                value={activity.newExerciseName}
-                onChangeText={(text) => updateActivityField(idx, 'newExerciseName', text)}
-                style={commonStyles.input}
-              />
-              <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 8 }}>
-                <Button
-                  title="Lift"
-                  onPress={() => updateActivityField(idx, 'newExerciseType', 'Lift')}
-                  color={activity.newExerciseType === 'Lift' ? '#4a90e2' : '#555'}
-                />
-                <Button
-                  title="Cardio"
-                  onPress={() => updateActivityField(idx, 'newExerciseType', 'Cardio')}
-                  color={activity.newExerciseType === 'Cardio' ? '#4a90e2' : '#555'}
-                />
-              </View>
-              {activity.newExerciseType === 'Lift' && (
-                <View>
-                  <Text style={commonStyles.itemText}>Sets:</Text>
-                  {activity.sets.map((set, setIdx) => (
-                    <View
-                      key={setIdx}
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        marginBottom: 8,
-                      }}
-                    >
-                      <TextInput
-                        placeholder="Reps"
-                        placeholderTextColor="#888"
-                        value={set.reps}
-                        onChangeText={(text) => updateSetField(idx, setIdx, 'reps', text)}
-                        style={[commonStyles.input, { flex: 1, marginRight: 8 }]}
-                        keyboardType="numeric"
-                      />
-                      <TextInput
-                        placeholder="Weight"
-                        placeholderTextColor="#888"
-                        value={set.weight}
-                        onChangeText={(text) => updateSetField(idx, setIdx, 'weight', text)}
-                        style={[commonStyles.input, { flex: 1 }]}
-                        keyboardType="numeric"
-                      />
-                    </View>
-                  ))}
-                  <Button title="Add Set" onPress={() => addSetToActivity(idx)} color="#4a90e2" />
-                </View>
-              )}
-              {activity.newExerciseType === 'Cardio' && (
-                <View>
+            <TextInput
+              placeholder="Enter New Exercise Name"
+              placeholderTextColor="#888"
+              value={activity.exerciseName}
+              onChangeText={(text) => updateActivityField(idx, 'exerciseName', text)}
+              style={commonStyles.input}
+            />
+          )}
+          <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 8 }}>
+            <Button
+              title="Lift"
+              onPress={() => updateActivityField(idx, 'exerciseType', 'Lift')}
+              color={activity.exerciseType === 'Lift' ? '#4a90e2' : '#555'}
+            />
+            <Button
+              title="Cardio"
+              onPress={() => updateActivityField(idx, 'exerciseType', 'Cardio')}
+              color={activity.exerciseType === 'Cardio' ? '#4a90e2' : '#555'}
+            />
+          </View>
+          {activity.exerciseType === 'Lift' ? (
+            <View>
+              <Text style={commonStyles.itemText}>Sets:</Text>
+              {activity.sets.map((set, setIdx) => (
+                <View
+                  key={setIdx}
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginBottom: 8,
+                  }}
+                >
                   <TextInput
-                    placeholder="Default Duration (sec)"
+                    placeholder="Reps"
                     placeholderTextColor="#888"
-                    value={activity.defaultDuration}
-                    onChangeText={(text) => updateActivityField(idx, 'defaultDuration', text)}
-                    style={commonStyles.input}
+                    value={set.reps}
+                    onChangeText={(text) => updateSetField(idx, setIdx, 'reps', text)}
+                    style={[commonStyles.input, { flex: 1, marginRight: 8 }]}
                     keyboardType="numeric"
                   />
                   <TextInput
-                    placeholder="Default Unit (e.g., min)"
+                    placeholder="Weight"
                     placeholderTextColor="#888"
-                    value={activity.defaultUnit}
-                    onChangeText={(text) => updateActivityField(idx, 'defaultUnit', text)}
-                    style={commonStyles.input}
+                    value={set.weight}
+                    onChangeText={(text) => updateSetField(idx, setIdx, 'weight', text)}
+                    style={[commonStyles.input, { flex: 1 }]}
+                    keyboardType="numeric"
                   />
                 </View>
-              )}
-            </>
+              ))}
+              <Button title="Add Set" onPress={() => addSetToActivity(idx)} color="#4a90e2" />
+            </View>
+          ) : (
+            <View>
+              <TextInput
+                placeholder="Default Duration (sec)"
+                placeholderTextColor="#888"
+                value={activity.defaultDuration}
+                onChangeText={(text) => updateActivityField(idx, 'defaultDuration', text)}
+                style={commonStyles.input}
+                keyboardType="numeric"
+              />
+              <TextInput
+                placeholder="Default Unit (e.g., min)"
+                placeholderTextColor="#888"
+                value={activity.defaultUnit}
+                onChangeText={(text) => updateActivityField(idx, 'defaultUnit', text)}
+                style={commonStyles.input}
+              />
+            </View>
           )}
         </View>
       ))}

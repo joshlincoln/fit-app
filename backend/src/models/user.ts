@@ -14,7 +14,7 @@ const UserSchema = new Schema<UserDocument>(
     provider: { type: String, required: true, enum: ['apple', 'google'] },
     providerId: { type: String, required: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default model<UserDocument>('User', UserSchema);

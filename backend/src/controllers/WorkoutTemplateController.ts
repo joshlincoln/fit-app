@@ -16,15 +16,14 @@ export interface CreateWorkoutTemplateRequest {
 @Route('templates')
 @Tags('WorkoutTemplate')
 export class WorkoutTemplateController extends Controller {
-
   @Post('/')
   public async createTemplate(
-    @Body() requestBody: CreateWorkoutTemplateRequest
+    @Body() requestBody: CreateWorkoutTemplateRequest,
   ): Promise<WorkoutTemplateDocument> {
     // Basic validation: Ensure required fields are present.
     if (!requestBody.userId || !requestBody.name) {
       this.setStatus(400);
-      throw new Error("Missing required fields: userId and name are required");
+      throw new Error('Missing required fields: userId and name are required');
     }
     // Optionally, add more validation here.
     const template = new WorkoutTemplate(requestBody);

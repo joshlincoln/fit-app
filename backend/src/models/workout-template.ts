@@ -28,7 +28,7 @@ const TemplateActivitySchema = new Schema<TemplateActivity>(
     defaultDuration: { type: Number },
     defaultUnit: { type: String },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const WorkoutTemplateSchema = new Schema<WorkoutTemplateDocument>(
@@ -38,7 +38,7 @@ const WorkoutTemplateSchema = new Schema<WorkoutTemplateDocument>(
     description: { type: String },
     activities: { type: [TemplateActivitySchema], default: [] },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default model<WorkoutTemplateDocument>('WorkoutTemplate', WorkoutTemplateSchema);

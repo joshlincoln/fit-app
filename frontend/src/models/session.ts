@@ -1,9 +1,8 @@
 export interface SessionSet {
-    reps: number;
-    weight: number;
-    previous?: { reps: number; weight: number };
-  }
-  
+  reps: number;
+  weight: number;
+  previous?: { reps: number; weight: number };
+}
 
 export interface SessionActivity {
   id: string;

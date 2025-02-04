@@ -12,11 +12,11 @@ const LoginScreen = () => {
     setLoading(true);
     try {
       // In a production app, use expo-auth-session or similar to get a real token.
-      const idToken = "DUMMY_GOOGLE_ID_TOKEN"; // Replace with real token retrieval
+      const idToken = 'DUMMY_GOOGLE_ID_TOKEN'; // Replace with real token retrieval
       const response = await googleSignIn({ idToken });
       setAuth(response);
     } catch (error) {
-      console.error("Google sign in error", error);
+      console.error('Google sign in error', error);
     } finally {
       setLoading(false);
     }
@@ -25,11 +25,11 @@ const LoginScreen = () => {
   const handleAppleSignIn = async () => {
     setLoading(true);
     try {
-      const identityToken = "DUMMY_APPLE_ID_TOKEN"; // Replace with real token retrieval
+      const identityToken = 'DUMMY_APPLE_ID_TOKEN'; // Replace with real token retrieval
       const response = await appleSignIn({ identityToken });
       setAuth(response);
     } catch (error) {
-      console.error("Apple sign in error", error);
+      console.error('Apple sign in error', error);
     } finally {
       setLoading(false);
     }
