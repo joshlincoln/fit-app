@@ -1,17 +1,11 @@
 // src/store/fitStore.ts
 import { create } from 'zustand';
-import {
-  getTemplates,
-  getSessions,
-  getAnalytics,
-  createTemplate as apiCreateTemplate,
-  createSession as apiCreateSession,
-  WorkoutTemplate,
-  WorkoutSession,
-  AnalyticsData,
-  CreateWorkoutTemplateRequest,
-  CreateWorkoutSessionRequest,
-} from '../services/workout';
+import { CreateWorkoutTemplateRequest, WorkoutTemplate } from '../models/workout';
+import { CreateWorkoutSessionRequest, WorkoutSession } from '../models/session';
+import { AnalyticsData } from '../models/analytics';
+import { getAnalytics } from '../services/analytics';
+import { createSession, getSessions } from '../services/session';
+import { createTemplate, getTemplates } from '../services/workout';
 
 interface FitState {
   templates: WorkoutTemplate[];
@@ -74,7 +68,7 @@ export const useFitStore = create<FitState>((set) => ({
   },
   createTemplate: async (data: CreateWorkoutTemplateRequest) => {
     try {
-      const newTemplate = await apiCreateTemplate(data);
+      const newTemplate = await createTemplate(data);
       set((state) => ({ templates: [...state.templates, newTemplate] }));
     } catch (error) {
       console.error(error);
@@ -83,7 +77,7 @@ export const useFitStore = create<FitState>((set) => ({
   },
   createSession: async (data: CreateWorkoutSessionRequest) => {
     try {
-      const newSession = await apiCreateSession(data);
+      const newSession = await createSession(data);
       set((state) => ({ sessions: [...state.sessions, newSession] }));
     } catch (error) {
       console.error(error);

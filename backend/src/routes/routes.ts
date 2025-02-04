@@ -7,6 +7,8 @@ import { ActivityController } from './../controllers/ActivityController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AnalyticsController } from './../controllers/AnalyticsController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { AuthController } from './../controllers/AuthController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { ExerciseController } from './../controllers/ExerciseController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { WorkoutSessionController } from './../controllers/WorkoutSessionController';
@@ -51,6 +53,27 @@ const models: TsoaRoute.Models = {
     "Record_string.number-Array_": {
         "dataType": "refAlias",
         "type": {"dataType":"nestedObjectLiteral","nestedProperties":{},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UserDocument": {
+        "dataType": "refAlias",
+        "type": {"ref":"FlattenMaps_T_","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GoogleAuthRequest": {
+        "dataType": "refObject",
+        "properties": {
+            "idToken": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AppleAuthRequest": {
+        "dataType": "refObject",
+        "properties": {
+            "identityToken": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ExerciseDocument": {
@@ -111,7 +134,7 @@ const models: TsoaRoute.Models = {
             "userId": {"dataType":"double","required":true},
             "name": {"dataType":"string","required":true},
             "description": {"dataType":"string"},
-            "activities": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"defaultSets":{"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"weight":{"dataType":"double","required":true},"reps":{"dataType":"double","required":true}}}},"name":{"dataType":"string","required":true},"type":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Lift"]},{"dataType":"enum","enums":["Cardio"]}],"required":true},"id":{"dataType":"string","required":true}}},"required":true},
+            "activities": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"defaultUnit":{"dataType":"string"},"defaultDuration":{"dataType":"double"},"defaultSets":{"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"weight":{"dataType":"double","required":true},"reps":{"dataType":"double","required":true}}}},"exercise":{"dataType":"string","required":true}}},"required":true},
         },
         "additionalProperties": false,
     },
@@ -244,6 +267,56 @@ export function RegisterRoutes(app: express.Router) {
 
 
               const promise = controller.getAnalytics.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/auth/google',
+            ...(fetchMiddlewares<RequestHandler>(AuthController)),
+            ...(fetchMiddlewares<RequestHandler>(AuthController.prototype.googleSignIn)),
+
+            function AuthController_googleSignIn(request: any, response: any, next: any) {
+            const args = {
+                    body: {"in":"body","name":"body","required":true,"ref":"GoogleAuthRequest"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new AuthController();
+
+
+              const promise = controller.googleSignIn.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/auth/apple',
+            ...(fetchMiddlewares<RequestHandler>(AuthController)),
+            ...(fetchMiddlewares<RequestHandler>(AuthController.prototype.appleSignIn)),
+
+            function AuthController_appleSignIn(request: any, response: any, next: any) {
+            const args = {
+                    body: {"in":"body","name":"body","required":true,"ref":"AppleAuthRequest"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new AuthController();
+
+
+              const promise = controller.appleSignIn.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
@@ -405,7 +478,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function WorkoutTemplateController_createTemplate(request: any, response: any, next: any) {
             const args = {
-                    body: {"in":"body","name":"body","required":true,"ref":"CreateWorkoutTemplateRequest"},
+                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"CreateWorkoutTemplateRequest"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -418,30 +491,6 @@ export function RegisterRoutes(app: express.Router) {
 
 
               const promise = controller.createTemplate.apply(controller, validatedArgs as any);
-              promiseHandler(controller, promise, response, undefined, next);
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/templates',
-            ...(fetchMiddlewares<RequestHandler>(WorkoutTemplateController)),
-            ...(fetchMiddlewares<RequestHandler>(WorkoutTemplateController.prototype.getTemplates)),
-
-            function WorkoutTemplateController_getTemplates(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request, response);
-
-                const controller = new WorkoutTemplateController();
-
-
-              const promise = controller.getTemplates.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

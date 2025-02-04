@@ -94,6 +94,33 @@
 				"type": "object",
 				"description": "Construct a type with a set of properties K of type T"
 			},
+			"UserDocument": {
+				"$ref": "#/components/schemas/FlattenMaps_T_"
+			},
+			"GoogleAuthRequest": {
+				"properties": {
+					"idToken": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"idToken"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AppleAuthRequest": {
+				"properties": {
+					"identityToken": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"identityToken"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"ExerciseDocument": {
 				"$ref": "#/components/schemas/FlattenMaps_T_"
 			},
@@ -301,6 +328,13 @@
 					"activities": {
 						"items": {
 							"properties": {
+								"defaultUnit": {
+									"type": "string"
+								},
+								"defaultDuration": {
+									"type": "number",
+									"format": "double"
+								},
 								"defaultSets": {
 									"items": {
 										"properties": {
@@ -321,24 +355,12 @@
 									},
 									"type": "array"
 								},
-								"name": {
-									"type": "string"
-								},
-								"type": {
-									"type": "string",
-									"enum": [
-										"Lift",
-										"Cardio"
-									]
-								},
-								"id": {
+								"exercise": {
 									"type": "string"
 								}
 							},
 							"required": [
-								"name",
-								"type",
-								"id"
+								"exercise"
 							],
 							"type": "object"
 						},
@@ -525,6 +547,94 @@
 				],
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/auth/google": {
+			"post": {
+				"operationId": "GoogleSignIn",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"user": {
+											"$ref": "#/components/schemas/UserDocument"
+										},
+										"token": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"user",
+										"token"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GoogleAuthRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/apple": {
+			"post": {
+				"operationId": "AppleSignIn",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"user": {
+											"$ref": "#/components/schemas/UserDocument"
+										},
+										"token": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"user",
+										"token"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AppleAuthRequest"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/exercises": {
@@ -736,7 +846,6 @@
 						}
 					}
 				},
-				"description": "Create a new workout template.",
 				"tags": [
 					"WorkoutTemplate"
 				],
@@ -752,30 +861,6 @@
 						}
 					}
 				}
-			},
-			"get": {
-				"operationId": "GetTemplates",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"items": {
-										"$ref": "#/components/schemas/WorkoutTemplateDocument"
-									},
-									"type": "array"
-								}
-							}
-						}
-					}
-				},
-				"description": "Retrieve all workout templates.",
-				"tags": [
-					"WorkoutTemplate"
-				],
-				"security": [],
-				"parameters": []
 			}
 		}
 	},

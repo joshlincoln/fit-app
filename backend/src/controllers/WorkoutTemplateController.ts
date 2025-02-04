@@ -16,22 +16,7 @@ export interface CreateWorkoutTemplateRequest {
 @Route('templates')
 @Tags('WorkoutTemplate')
 export class WorkoutTemplateController extends Controller {
-  /**
-   * Create a new workout template.
-   *
-   * @example requestBody
-   * {
-   *   "userId": 1,
-   *   "name": "Upper Body Strength",
-   *   "description": "Focus on chest, shoulders, and arms",
-   *   "activities": [
-   *     {
-   *       "exercise": "60f5a3b8e4b0a91234567890", // Exercise _id
-   *       "defaultSets": [{ "reps": 8, "weight": 100 }]
-   *     }
-   *   ]
-   * }
-   */
+
   @Post('/')
   public async createTemplate(
     @Body() requestBody: CreateWorkoutTemplateRequest

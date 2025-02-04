@@ -91,3 +91,10 @@ This is the back end for the Fit App—a fitness tracking application built with
 
    ```bash
    yarn install
+   ```
+4. Run 
+
+    ```bash
+    docker-compose up --build
+    ```
+
