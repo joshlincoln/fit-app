@@ -1,3 +1,4 @@
+// src/screens/HomeScreen.tsx
 import React, { useEffect } from 'react';
 import { View, Text, Button, ActivityIndicator } from 'react-native';
 import commonStyles from '../styles/commonStyles';
@@ -5,13 +6,14 @@ import { useFitStore } from '../store/workout';
 import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
-  const { sessions, loadingSessions, error, fetchSessions } = useFitStore();
+  const { sessions, templates, fetchSessions, loadingSessions, error } = useFitStore();
   const navigation = useNavigation();
 
   useEffect(() => {
     fetchSessions();
   }, []);
 
+  // Show the most recent session (if any)
   const lastSession = sessions[sessions.length - 1];
 
   return (
@@ -32,28 +34,36 @@ const HomeScreen = () => {
           {lastSession.activities.map((activity) => (
             <View key={activity.id} style={{ marginLeft: 8 }}>
               <Text style={commonStyles.itemText}>
-                {activity.name} ({activity.type})
+                {activity.name} {/* Ideally the exercise name */}
               </Text>
-              {activity.sets.map((set, index) => (
-                <Text key={index} style={commonStyles.itemText}>
-                  Set {index + 1}: {set.reps} reps @ {set.weight} lbs
+              {activity.defaultSets &&
+                activity.defaultSets.map((set, index) => (
+                  <Text key={`${activity.id}-${index}`} style={commonStyles.itemText}>
+                    Set {index + 1}: {set.reps} reps @ {set.weight} lbs
+                  </Text>
+                ))}
+              {activity.defaultDuration !== undefined && (
+                <Text style={commonStyles.itemText}>
+                  Duration: {activity.defaultDuration} {activity.defaultUnit}
                 </Text>
-              ))}
+              )}
             </View>
           ))}
         </View>
       ) : (
         <Text style={commonStyles.itemText}>No workout session recorded yet.</Text>
       )}
-
-      <View style={commonStyles.buttonSpacing}>
-        <Button
-          title="Start Session"
-          onPress={() => navigation.navigate('StartSession')}
-          color="#4a90e2"
-        />
-      </View>
-
+      {/* Only show Start Session button if there is at least one template */}
+      {templates.length > 0 && (
+        <View style={{ marginVertical: 16 }}>
+          <Button
+            title="Start Session"
+            onPress={() => navigation.navigate('StartSession')}
+            color="#4a90e2"
+          />
+        </View>
+      )}
+      {/* A small chart placeholder */}
       <View
         style={{
           height: 150,

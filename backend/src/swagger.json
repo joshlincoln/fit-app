@@ -499,7 +499,7 @@
             }
           }
         },
-        "description": "Stubbed Sign In with Google.\r\nThis endpoint ignores the provided token and returns a default user.",
+        "description": "Stubbed Sign In with Google.\nThis endpoint ignores the provided token and returns a default user.",
         "tags": ["Auth"],
         "security": [],
         "parameters": [],
@@ -539,7 +539,7 @@
             }
           }
         },
-        "description": "Stubbed Sign In with Apple.\r\nThis endpoint ignores the provided token and returns a default user.",
+        "description": "Stubbed Sign In with Apple.\nThis endpoint ignores the provided token and returns a default user.",
         "tags": ["Auth"],
         "security": [],
         "parameters": [],
@@ -697,7 +697,7 @@
             }
           }
         },
-        "description": "Create a new workout session.\r\nIf a templateId is provided, you may choose to pre-populate the session data from the template.",
+        "description": "Create a new workout session.\nIf a templateId is provided, you may choose to pre-populate the session data from the template.",
         "tags": ["WorkoutSession"],
         "security": [],
         "parameters": [],

@@ -1,4 +1,3 @@
-// src/navigation/AppNavigator.tsx
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -6,7 +5,7 @@ import HomeScreen from '../screens/HomeScreen';
 import WorkoutsScreen from '../screens/WorkoutsScreen';
 import WorkoutDetailScreen from '../screens/WorkoutDetailScreen';
 import CreateEditWorkoutScreen from '../screens/CreateEditWorkoutScreen';
-import StartSessionScreen from '../screens/StartSessionScreen';
+import SessionScreen from '../screens/SessionScreen'; // renamed screen
 import AnalyticsScreen from '../screens/AnalyticsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,11 +17,7 @@ const WorkoutsStack = createStackNavigator();
 const HomeStackNavigator = () => (
   <HomeStack.Navigator>
     <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ headerShown: false }} />
-    <HomeStack.Screen
-      name="StartSession"
-      component={StartSessionScreen}
-      options={{ title: 'Start Session' }}
-    />
+    <HomeStack.Screen name="Session" component={SessionScreen} options={{ title: 'Session' }} />
   </HomeStack.Navigator>
 );
 
@@ -38,17 +33,12 @@ const WorkoutsStackNavigator = () => (
       component={WorkoutDetailScreen}
       options={{ title: 'Workout Detail' }}
     />
-    {/* Add the CreateEditWorkout route so that the "Add Workout" button can navigate here */}
     <WorkoutsStack.Screen
       name="CreateEditWorkout"
       component={CreateEditWorkoutScreen}
-      options={{ title: 'Create/Edit Workout' }}
+      options={{ title: 'Create Workout' }}
     />
-    <WorkoutsStack.Screen
-      name="StartSession"
-      component={StartSessionScreen}
-      options={{ title: 'Start Session' }}
-    />
+    <WorkoutsStack.Screen name="Session" component={SessionScreen} options={{ title: 'Session' }} />
   </WorkoutsStack.Navigator>
 );
 
