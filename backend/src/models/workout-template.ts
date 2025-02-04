@@ -10,7 +10,6 @@ export interface TemplateActivity {
 export interface WorkoutTemplateDocument extends Document {
   userId: number;
   name: string;
-  description?: string;
   activities: TemplateActivity[];
   createdAt: Date;
   updatedAt: Date;
@@ -35,7 +34,6 @@ const WorkoutTemplateSchema = new Schema<WorkoutTemplateDocument>(
   {
     userId: { type: Number, required: true },
     name: { type: String, required: true },
-    description: { type: String },
     activities: { type: [TemplateActivitySchema], default: [] },
   },
   { timestamps: true },

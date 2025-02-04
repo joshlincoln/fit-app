@@ -6,6 +6,5 @@ import { useAuthStore } from '../src/store/auth';
 
 export default function App() {
   const { token } = useAuthStore();
-
   return <NavigationContainer>{token ? <AppNavigator /> : <LoginScreen />}</NavigationContainer>;
 }

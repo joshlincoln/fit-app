@@ -12,7 +12,6 @@ const WorkoutsScreen = () => {
     fetchTemplates();
   }, []);
 
-  // For each template, compute details: number of activities, last session date, and total volume.
   const templatesWithDetails = useMemo(() => {
     return templates.map((template) => {
       const relatedSessions = sessions.filter((s) => s.templateId === template._id);
@@ -23,17 +22,16 @@ const WorkoutsScreen = () => {
             )[0].date,
           ).toLocaleDateString()
         : 'Never';
-      // Total volume: for each session, sum up (reps*weight) for lift activities.
-      const totalVolume = relatedSessions.reduce((vol, session) => {
-        session.activities.forEach((act: any) => {
-          if (act.defaultSets) {
-            act.defaultSets.forEach((set: any) => {
-              vol += set.reps * set.weight;
-            });
-          }
-        });
-        return vol;
-      }, 0);
+      const totalVolume = relatedSessions.length
+        ? relatedSessions[0].activities.reduce((vol: number, act: any) => {
+            if (act.sets) {
+              act.sets.forEach((set: any) => {
+                vol += set.reps * set.weight;
+              });
+            }
+            return vol;
+          }, 0)
+        : 0;
       return {
         ...template,
         activityCount: template.activities.length,

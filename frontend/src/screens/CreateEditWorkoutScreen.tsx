@@ -16,9 +16,9 @@ export interface ActivityInput {
   id: string;
   selectedExerciseId: string; // existing exercise _id or "add_new"
   isNew: boolean; // true if creating new exercise
-  exerciseName: string; // effective name (from dropdown or manual entry)
-  exerciseType: 'Lift' | 'Cardio'; // effective type
-  sets: SetInput[]; // for lifts (allow multiple)
+  exerciseName: string; // effective name
+  exerciseType: 'Lift' | 'Cardio';
+  sets: SetInput[]; // allow multiple sets for lifts
   defaultDuration: string; // for cardio
   defaultUnit: string; // for cardio
 }
@@ -38,7 +38,11 @@ const CreateEditWorkoutScreen = () => {
     setLoadingExercises(true);
     try {
       const data = await getExercises();
-      setAvailableExercises(data);
+      // Ensure "Add new exercise" appears first by sorting
+      setAvailableExercises([
+        { _id: 'add_new', name: '➕ Add new exercise', type: 'Lift' } as Exercise,
+        ...data,
+      ]);
     } catch (error) {
       console.error(error);
     } finally {
@@ -77,8 +81,8 @@ const CreateEditWorkoutScreen = () => {
 
   useEffect(() => {
     if (availableExercises.length > 0) {
-      setActivities((prevActivities) =>
-        prevActivities.map((activity) => {
+      setActivities((prev) =>
+        prev.map((activity) => {
           if (activity.selectedExerciseId !== 'add_new') {
             const found = availableExercises.find((ex) => ex._id === activity.selectedExerciseId);
             if (found) {
@@ -149,7 +153,7 @@ const CreateEditWorkoutScreen = () => {
       updateActivityField(index, 'selectedExerciseId', 'add_new');
       updateActivityField(index, 'isNew', true);
       updateActivityField(index, 'exerciseName', '');
-      updateActivityField(index, 'sets', [{ reps: '', weight: '' }]); // reset sets
+      updateActivityField(index, 'sets', [{ reps: '', weight: '' }]);
       updateActivityField(index, 'defaultDuration', '');
       updateActivityField(index, 'defaultUnit', '');
     } else {
@@ -160,7 +164,7 @@ const CreateEditWorkoutScreen = () => {
         updateActivityField(index, 'exerciseName', found.name);
         updateActivityField(index, 'exerciseType', found.type);
         if (found.type === 'Lift') {
-          updateActivityField(index, 'sets', [{ reps: '', weight: '' }]); // reset to one blank set
+          updateActivityField(index, 'sets', [{ reps: '', weight: '' }]);
         } else if (found.type === 'Cardio') {
           updateActivityField(index, 'defaultDuration', '');
           updateActivityField(index, 'defaultUnit', '');
@@ -172,7 +176,6 @@ const CreateEditWorkoutScreen = () => {
   const isValidWorkout = () => {
     if (!workoutName.trim()) return false;
     if (activities.length === 0) return false;
-    // Must have at least one activity with a nonzero rep value (for lifts)
     return activities.some((act) => {
       if (act.exerciseType === 'Lift') {
         return act.sets.some((set) => parseInt(set.reps, 10) > 0);
@@ -234,7 +237,7 @@ const CreateEditWorkoutScreen = () => {
       name: workoutName,
       activities: convertedActivities,
     });
-    await fetchTemplates(); // refresh templates list
+    await fetchTemplates();
     navigation.goBack();
   };
 
@@ -260,11 +263,13 @@ const CreateEditWorkoutScreen = () => {
               onValueChange={(itemValue) => handleExerciseSelectionChange(idx, itemValue)}
               style={{ color: '#f0f0f0', backgroundColor: '#333', marginBottom: 8 }}
             >
-              <Picker.Item label="-- Select Exercise --" value="" />
               {availableExercises.map((ex) => (
-                <Picker.Item key={ex._id} label={ex.name} value={ex._id} />
+                <Picker.Item
+                  key={ex._id}
+                  label={ex._id === 'add_new' ? ex.name : ex.name}
+                  value={ex._id}
+                />
               ))}
-              <Picker.Item label="Add new exercise" value="add_new" />
             </Picker>
           )}
           {activity.selectedExerciseId === 'add_new' && activity.isNew && (

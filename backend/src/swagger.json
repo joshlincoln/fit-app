@@ -180,10 +180,10 @@
         "type": "object",
         "additionalProperties": false
       },
-      "WorkoutSessionDocument": {
+      "SessionDocument": {
         "$ref": "#/components/schemas/FlattenMaps_T_"
       },
-      "CreateWorkoutSessionRequest": {
+      "CreateSessionRequest": {
         "properties": {
           "userId": {
             "type": "number",
@@ -205,20 +205,6 @@
                 "sets": {
                   "items": {
                     "properties": {
-                      "previous": {
-                        "properties": {
-                          "weight": {
-                            "type": "number",
-                            "format": "double"
-                          },
-                          "reps": {
-                            "type": "number",
-                            "format": "double"
-                          }
-                        },
-                        "required": ["weight", "reps"],
-                        "type": "object"
-                      },
                       "weight": {
                         "type": "number",
                         "format": "double"
@@ -233,18 +219,18 @@
                   },
                   "type": "array"
                 },
-                "name": {
-                  "type": "string"
-                },
                 "type": {
                   "type": "string",
                   "enum": ["Lift", "Cardio"]
+                },
+                "name": {
+                  "type": "string"
                 },
                 "id": {
                   "type": "string"
                 }
               },
-              "required": ["sets", "name", "type", "id"],
+              "required": ["sets", "type", "name", "id"],
               "type": "object"
             },
             "type": "array"
@@ -253,7 +239,7 @@
             "type": "string"
           }
         },
-        "required": ["userId", "date", "duration", "activities"],
+        "required": ["userId", "templateId", "date", "duration", "activities"],
         "type": "object",
         "additionalProperties": false
       },
@@ -267,9 +253,6 @@
             "format": "double"
           },
           "name": {
-            "type": "string"
-          },
-          "description": {
             "type": "string"
           },
           "activities": {
@@ -691,14 +674,14 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WorkoutSessionDocument"
+                  "$ref": "#/components/schemas/SessionDocument"
                 }
               }
             }
           }
         },
         "description": "Create a new workout session.\nIf a templateId is provided, you may choose to pre-populate the session data from the template.",
-        "tags": ["WorkoutSession"],
+        "tags": ["Session"],
         "security": [],
         "parameters": [],
         "requestBody": {
@@ -706,7 +689,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateWorkoutSessionRequest"
+                "$ref": "#/components/schemas/CreateSessionRequest"
               }
             }
           }
@@ -721,7 +704,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/WorkoutSessionDocument"
+                    "$ref": "#/components/schemas/SessionDocument"
                   },
                   "type": "array"
                 }
@@ -730,7 +713,7 @@
           }
         },
         "description": "Retrieve all workout sessions.",
-        "tags": ["WorkoutSession"],
+        "tags": ["Session"],
         "security": [],
         "parameters": []
       }

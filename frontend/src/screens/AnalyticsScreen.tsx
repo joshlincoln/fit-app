@@ -35,7 +35,6 @@ const AnalyticsScreen = () => {
             <Text style={commonStyles.itemText}>Workouts Per Week</Text>
             <Text style={commonStyles.itemText}>3 workouts</Text>
           </View>
-          {/* Additional analytics ideas: charts, trend lines, etc. */}
         </>
       )}
     </ScrollView>

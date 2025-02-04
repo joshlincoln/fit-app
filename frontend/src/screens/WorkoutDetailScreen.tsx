@@ -21,7 +21,6 @@ const WorkoutDetailScreen = () => {
   const workout = templates.find((t) => t._id === workoutId);
   const workoutSessions = sessions.filter((s) => s.templateId === workoutId);
 
-  // Compute total volume and last session date for display
   const lastSessionDate = useMemo(() => {
     if (workoutSessions.length === 0) return 'Never';
     return new Date(
@@ -32,15 +31,16 @@ const WorkoutDetailScreen = () => {
   }, [workoutSessions]);
 
   const totalVolume = useMemo(() => {
+    if (workoutSessions.length === 0) return 0;
+    // Use the most recent session for volume
+    const recent = workoutSessions[0];
     let vol = 0;
-    workoutSessions.forEach((session: any) => {
-      session.activities.forEach((act: any) => {
-        if (act.defaultSets) {
-          act.defaultSets.forEach((set: any) => {
-            vol += set.reps * set.weight;
-          });
-        }
-      });
+    recent.activities.forEach((act: any) => {
+      if (act.sets) {
+        act.sets.forEach((set: any) => {
+          vol += set.reps * set.weight;
+        });
+      }
     });
     return vol;
   }, [workoutSessions]);
@@ -110,8 +110,8 @@ const WorkoutDetailScreen = () => {
               {item.activities.map((activity) => (
                 <View key={`${item._id}-${activity.id}`} style={{ marginLeft: 8 }}>
                   <Text style={commonStyles.itemText}>{activity.name}</Text>
-                  {activity.defaultSets &&
-                    activity.defaultSets.map((set, index) => (
+                  {activity.sets &&
+                    activity.sets.map((set, index) => (
                       <Text
                         key={`${item._id}-${activity.id}-${index}`}
                         style={commonStyles.itemText}

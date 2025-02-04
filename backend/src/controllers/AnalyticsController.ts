@@ -1,6 +1,6 @@
 // src/controllers/AnalyticsController.ts
 import { Controller, Get, Route, Tags } from 'tsoa';
-import WorkoutSession from '../models/workout-session';
+import WorkoutSession from '../models/session';
 
 @Route('analytics')
 @Tags('Analytics')

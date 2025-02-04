@@ -20,7 +20,7 @@ import { AuthController } from './../controllers/AuthController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { ExerciseController } from './../controllers/ExerciseController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { WorkoutSessionController } from './../controllers/WorkoutSessionController';
+import { SessionController } from './../controllers/SessionController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { WorkoutTemplateController } from './../controllers/WorkoutTemplateController';
 import type { RequestHandler } from 'express';
@@ -176,16 +176,16 @@ const models: TsoaRoute.Models = {
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  WorkoutSessionDocument: {
+  SessionDocument: {
     dataType: 'refAlias',
     type: { ref: 'FlattenMaps_T_', validators: {} },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  CreateWorkoutSessionRequest: {
+  CreateSessionRequest: {
     dataType: 'refObject',
     properties: {
       userId: { dataType: 'double', required: true },
-      templateId: { dataType: 'string' },
+      templateId: { dataType: 'string', required: true },
       date: { dataType: 'string', required: true },
       duration: { dataType: 'double', required: true },
       activities: {
@@ -198,20 +198,12 @@ const models: TsoaRoute.Models = {
               array: {
                 dataType: 'nestedObjectLiteral',
                 nestedProperties: {
-                  previous: {
-                    dataType: 'nestedObjectLiteral',
-                    nestedProperties: {
-                      weight: { dataType: 'double', required: true },
-                      reps: { dataType: 'double', required: true },
-                    },
-                  },
                   weight: { dataType: 'double', required: true },
                   reps: { dataType: 'double', required: true },
                 },
               },
               required: true,
             },
-            name: { dataType: 'string', required: true },
             type: {
               dataType: 'union',
               subSchemas: [
@@ -220,6 +212,7 @@ const models: TsoaRoute.Models = {
               ],
               required: true,
             },
+            name: { dataType: 'string', required: true },
             id: { dataType: 'string', required: true },
           },
         },
@@ -240,7 +233,6 @@ const models: TsoaRoute.Models = {
     properties: {
       userId: { dataType: 'double', required: true },
       name: { dataType: 'string', required: true },
-      description: { dataType: 'string' },
       activities: {
         dataType: 'array',
         array: {
@@ -581,12 +573,17 @@ export function RegisterRoutes(app: express.Router) {
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.post(
     '/sessions',
-    ...fetchMiddlewares<RequestHandler>(WorkoutSessionController),
-    ...fetchMiddlewares<RequestHandler>(WorkoutSessionController.prototype.createSession),
+    ...fetchMiddlewares<RequestHandler>(SessionController),
+    ...fetchMiddlewares<RequestHandler>(SessionController.prototype.createSession),
 
-    function WorkoutSessionController_createSession(request: any, response: any, next: any) {
+    function SessionController_createSession(request: any, response: any, next: any) {
       const args = {
-        body: { in: 'body', name: 'body', required: true, ref: 'CreateWorkoutSessionRequest' },
+        requestBody: {
+          in: 'body',
+          name: 'requestBody',
+          required: true,
+          ref: 'CreateSessionRequest',
+        },
       };
 
       // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -595,7 +592,7 @@ export function RegisterRoutes(app: express.Router) {
       try {
         validatedArgs = getValidatedArgs(args, request, response);
 
-        const controller = new WorkoutSessionController();
+        const controller = new SessionController();
 
         const promise = controller.createSession.apply(controller, validatedArgs as any);
         promiseHandler(controller, promise, response, undefined, next);
@@ -607,10 +604,10 @@ export function RegisterRoutes(app: express.Router) {
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
     '/sessions',
-    ...fetchMiddlewares<RequestHandler>(WorkoutSessionController),
-    ...fetchMiddlewares<RequestHandler>(WorkoutSessionController.prototype.getSessions),
+    ...fetchMiddlewares<RequestHandler>(SessionController),
+    ...fetchMiddlewares<RequestHandler>(SessionController.prototype.getSessions),
 
-    function WorkoutSessionController_getSessions(request: any, response: any, next: any) {
+    function SessionController_getSessions(request: any, response: any, next: any) {
       const args = {};
 
       // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -619,7 +616,7 @@ export function RegisterRoutes(app: express.Router) {
       try {
         validatedArgs = getValidatedArgs(args, request, response);
 
-        const controller = new WorkoutSessionController();
+        const controller = new SessionController();
 
         const promise = controller.getSessions.apply(controller, validatedArgs as any);
         promiseHandler(controller, promise, response, undefined, next);

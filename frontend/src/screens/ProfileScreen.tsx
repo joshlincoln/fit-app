@@ -4,8 +4,8 @@ import commonStyles from '../styles/commonStyles';
 
 const ProfileScreen = () => {
   const [profile, setProfile] = useState({
-    name: 'John Doe',
-    email: 'john@example.com',
+    name: 'Test User',
+    email: 'test@example.com',
     age: '30',
     weight: '180 lbs',
     height: '5\'10"',
@@ -45,7 +45,7 @@ const ProfileScreen = () => {
           value={profile.height}
           onChangeText={(text) => setProfile({ ...profile, height: text })}
         />
-        <View style={commonStyles.buttonSpacing}>
+        <View style={{ marginVertical: 16 }}>
           <Button title="Save Profile" onPress={() => {}} color="#4a90e2" />
         </View>
       </View>

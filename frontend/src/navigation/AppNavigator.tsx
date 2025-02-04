@@ -5,7 +5,7 @@ import HomeScreen from '../screens/HomeScreen';
 import WorkoutsScreen from '../screens/WorkoutsScreen';
 import WorkoutDetailScreen from '../screens/WorkoutDetailScreen';
 import CreateEditWorkoutScreen from '../screens/CreateEditWorkoutScreen';
-import SessionScreen from '../screens/SessionScreen'; // renamed screen
+import SessionScreen from '../screens/SessionScreen';
 import AnalyticsScreen from '../screens/AnalyticsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import { Ionicons } from '@expo/vector-icons';

@@ -1,4 +1,3 @@
-// src/screens/HomeScreen.tsx
 import React, { useEffect } from 'react';
 import { View, Text, Button, ActivityIndicator } from 'react-native';
 import commonStyles from '../styles/commonStyles';
@@ -13,7 +12,6 @@ const HomeScreen = () => {
     fetchSessions();
   }, []);
 
-  // Show the most recent session (if any)
   const lastSession = sessions[sessions.length - 1];
 
   return (
@@ -34,36 +32,29 @@ const HomeScreen = () => {
           {lastSession.activities.map((activity) => (
             <View key={activity.id} style={{ marginLeft: 8 }}>
               <Text style={commonStyles.itemText}>
-                {activity.name} {/* Ideally the exercise name */}
+                {activity.name} {/* Should show exercise name */}
               </Text>
-              {activity.defaultSets &&
-                activity.defaultSets.map((set, index) => (
+              {activity.sets &&
+                activity.sets.map((set, index) => (
                   <Text key={`${activity.id}-${index}`} style={commonStyles.itemText}>
                     Set {index + 1}: {set.reps} reps @ {set.weight} lbs
                   </Text>
                 ))}
-              {activity.defaultDuration !== undefined && (
-                <Text style={commonStyles.itemText}>
-                  Duration: {activity.defaultDuration} {activity.defaultUnit}
-                </Text>
-              )}
             </View>
           ))}
         </View>
       ) : (
         <Text style={commonStyles.itemText}>No workout session recorded yet.</Text>
       )}
-      {/* Only show Start Session button if there is at least one template */}
       {templates.length > 0 && (
         <View style={{ marginVertical: 16 }}>
           <Button
             title="Start Session"
-            onPress={() => navigation.navigate('StartSession')}
+            onPress={() => navigation.navigate('Session')}
             color="#4a90e2"
           />
         </View>
       )}
-      {/* A small chart placeholder */}
       <View
         style={{
           height: 150,
